@@ -1,0 +1,159 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* ===== FADE IN ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.fade-in-delay-1 { animation-delay: 0.05s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeInUp; animation-duration: 0.4s; }
+.fade-in-delay-2 { animation-delay: 0.10s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeInUp; animation-duration: 0.4s; }
+.fade-in-delay-3 { animation-delay: 0.15s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeInUp; animation-duration: 0.4s; }
+.fade-in-delay-4 { animation-delay: 0.20s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeInUp; animation-duration: 0.4s; }
+.fade-in-delay-5 { animation-delay: 0.25s; opacity: 0; animation-fill-mode: forwards; animation-name: fadeInUp; animation-duration: 0.4s; }
+
+/* ===== CARD HOVER ===== */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(30, 45, 90, 0.12);
+}
+
+/* ===== TOAST ===== */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  min-width: 220px;
+  max-width: 320px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  animation: slideIn 0.3s ease forwards;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast.success { background-color: #1e2d5a; }
+.toast.error   { background-color: #8B1A2B; }
+.toast.hide    { animation: slideOut 0.3s ease forwards; }
+
+/* ===== BUTTON PRESS ===== */
+.btn-press {
+  transition: transform 0.1s ease;
+}
+
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ===== PULSE DOT (للـ Live indicator) ===== */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== SKELETON ===== */
+@keyframes shimmer {
+  0% { background-position: -468px 0; }
+  100% { background-position: 468px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    to right,
+    #f0f0f0 8%,
+    #e0e0e0 18%,
+    #f0f0f0 33%
+  );
+  background-size: 936px 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.skeleton-text {
+  height: 14px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.skeleton-title {
+  height: 18px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+.skeleton-btn {
+  height: 36px;
+  border-radius: 10px;
+}
+
+.skeleton-badge {
+  height: 22px;
+  width: 60px;
+  border-radius: 20px;
+}
+
+/* ===== DARK MODE ===== */
+.dark {
+  --bg-main: #0f1117;
+  --bg-card: #1a1d27;
+  --bg-nav: #0d1021;
+  --text-primary: #ffffff;
+  --text-secondary: #a0aec0;
+  --border-color: #2d3748;
+}
+
+.light {
+  --bg-main: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-nav: #1e2d5a;
+  --text-primary: #1a202c;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+}
