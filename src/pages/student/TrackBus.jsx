@@ -52,7 +52,7 @@ const TrackBus = () => {
   }
 
   const connectSocket = () => {
-    socketRef.current = io('http://localhost:3000')
+    socketRef.current = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000')
     socketRef.current.on('connect', () => {
       setConnected(true)
       socketRef.current.emit('join_trip', tripId)
