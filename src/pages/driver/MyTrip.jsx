@@ -11,6 +11,8 @@ const MyTrip = () => {
   const [trips, setTrips] = useState([])
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+
   const { user, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const { t } = useTranslation()
@@ -50,45 +52,69 @@ const MyTrip = () => {
     <div className="min-h-screen" style={{ backgroundColor: isDark ? '#0f1117' : '#f5f5f5' }}>
 
       {/* Navbar */}
-      <nav className="shadow px-6 py-3 flex justify-between items-center"
+      <nav className="shadow px-4 md:px-6 py-3 relative"
         style={{ backgroundColor: isDark ? '#0d1021' : '#1e2d5a' }}>
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="IU" className="h-10 w-10 object-contain" />
-          <div>
-            <h1 className="text-white font-bold text-base leading-tight">{t('appName')}</h1>
-            <p className="text-blue-200 text-xs">{t('university')} — {t('driver')}</p>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="IU" className="h-10 w-10 object-contain" />
+            <div>
+              <h1 className="text-white font-bold text-base leading-tight">{t('appName')}</h1>
+              <p className="text-blue-200 text-xs">{t('university')} — {t('driver')}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex gap-4 items-center">
-          <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
-          <button
-            onClick={toggleTheme}
-            className="text-sm px-3 py-1 rounded-lg transition btn-press"
-            style={{
-              backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
-              color: isDark ? '#1e2d5a' : 'white'
-            }}
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button>
-          <button
-            onClick={toggleLanguage}
-            className="text-sm px-3 py-1 rounded-lg transition btn-press font-medium"
-            style={{
-              backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
-              color: isArabic ? '#1e2d5a' : 'white'
-            }}
-          >
-            {isArabic ? 'EN' : 'ع'}
-          </button>
-          <button
-            onClick={handleLogout}
-            className="text-sm px-3 py-1 rounded-lg text-white hover:opacity-90 transition btn-press"
-            style={{ backgroundColor: '#8B1A2B' }}
-          >
-            {t('logout')}
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex gap-4 items-center">
+            <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
+            <button onClick={toggleTheme}
+              className="text-sm px-3 py-1 rounded-lg transition btn-press"
+              style={{ backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isDark ? '#1e2d5a' : 'white' }}>
+              {isDark ? '☀️' : '🌙'}
+            </button>
+            <button onClick={toggleLanguage}
+              className="text-sm px-3 py-1 rounded-lg transition btn-press font-medium"
+              style={{ backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isArabic ? '#1e2d5a' : 'white' }}>
+              {isArabic ? 'EN' : 'ع'}
+            </button>
+            <button onClick={handleLogout}
+              className="text-sm px-3 py-1 rounded-lg text-white hover:opacity-90 transition btn-press"
+              style={{ backgroundColor: '#8B1A2B' }}>
+              {t('logout')}
+            </button>
+          </div>
+
+          {/* Hamburger */}
+          <button onClick={() => setMenuOpen(!menuOpen)} className="flex md:hidden flex-col gap-1.5 p-2">
+            <span className="block w-6 h-0.5 bg-white" />
+            <span className="block w-6 h-0.5 bg-white" />
+            <span className="block w-6 h-0.5 bg-white" />
           </button>
         </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="md:hidden flex flex-col gap-2 pt-4 pb-2 fade-in"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '12px' }}>
+            <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
+            <div className="flex gap-2">
+              <button onClick={toggleTheme}
+                className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press"
+                style={{ backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isDark ? '#1e2d5a' : 'white' }}>
+                {isDark ? '☀️' : '🌙'}
+              </button>
+              <button onClick={toggleLanguage}
+                className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press font-medium"
+                style={{ backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isArabic ? '#1e2d5a' : 'white' }}>
+                {isArabic ? 'EN' : 'ع'}
+              </button>
+            </div>
+            <button onClick={() => { handleLogout(); setMenuOpen(false) }}
+              className="text-sm px-3 py-2 rounded-lg text-white hover:opacity-90 transition btn-press text-left"
+              style={{ backgroundColor: '#8B1A2B' }}>
+              {t('logout')}
+            </button>
+          </div>
+        )}
       </nav>
 
       <div className="max-w-lg mx-auto py-8 px-4">
@@ -107,21 +133,16 @@ const MyTrip = () => {
             <div
               key={trip.id}
               className={`rounded-xl shadow-sm p-5 mb-4 border-l-4 card-hover fade-in-delay-${Math.min(index + 1, 5)}`}
-              style={{
-                backgroundColor: isDark ? '#1a1d27' : 'white',
-                borderLeftColor: '#1e2d5a'
-              }}
+              style={{ backgroundColor: isDark ? '#1a1d27' : 'white', borderLeftColor: '#1e2d5a' }}
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="font-semibold"
-                    style={{ color: isDark ? '#ffffff' : '#1a202c' }}>
+                  <h3 className="font-semibold" style={{ color: isDark ? '#ffffff' : '#1a202c' }}>
                     {trip.direction === 'from_university'
                       ? `${t('israTo')} ${trip.area}`
                       : `${trip.area} ${t('toIsra')}`}
                   </h3>
-                  <p className="text-sm mt-1"
-                    style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>
+                  <p className="text-sm mt-1" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>
                     Bus {trip.bus_number} · {new Date(trip.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -137,37 +158,24 @@ const MyTrip = () => {
               <div className="flex justify-between text-sm mb-4 rounded-lg p-3"
                 style={{ backgroundColor: isDark ? '#0f1117' : '#f0f3fa' }}>
                 <div className="text-center">
-                  <div className="font-bold text-lg" style={{ color: '#1e2d5a' }}>
-                    {trip.booked_seats}
-                  </div>
-                  <div className="text-xs" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>
-                    {t('booked')}
-                  </div>
+                  <div className="font-bold text-lg" style={{ color: '#1e2d5a' }}>{trip.booked_seats}</div>
+                  <div className="text-xs" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>{t('booked')}</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-lg" style={{ color: '#1e2d5a' }}>
-                    {trip.capacity}
-                  </div>
-                  <div className="text-xs" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>
-                    {t('capacity')}
-                  </div>
+                  <div className="font-bold text-lg" style={{ color: '#1e2d5a' }}>{trip.capacity}</div>
+                  <div className="text-xs" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>{t('capacity')}</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-lg text-green-600">
-                    {trip.capacity - trip.booked_seats}
-                  </div>
-                  <div className="text-xs" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>
-                    {t('available')}
-                  </div>
+                  <div className="font-bold text-lg text-green-600">{trip.capacity - trip.booked_seats}</div>
+                  <div className="text-xs" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>{t('available')}</div>
                 </div>
               </div>
 
               {trip.status !== 'completed' && (
                 <button
-                 onClick={() => navigate(`/gps-active?trip_id=${trip.id}&driver_id=${user?.id}&area=${trip.area}&direction=${trip.direction}`)}
+                  onClick={() => navigate(`/gps-active?trip_id=${trip.id}&driver_id=${user?.id}&area=${trip.area}&direction=${trip.direction}`)}
                   className="w-full text-white py-2 rounded-lg text-sm font-medium hover:opacity-90 transition btn-press"
-                  style={{ backgroundColor: '#8B1A2B' }}
-                >
+                  style={{ backgroundColor: '#8B1A2B' }}>
                   {t('startTrip')}
                 </button>
               )}
@@ -177,19 +185,12 @@ const MyTrip = () => {
                   {t('tripCompleted')}
                 </div>
               )}
-
             </div>
           ))
         )}
       </div>
 
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
     </div>
   )
