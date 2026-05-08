@@ -204,13 +204,11 @@ const GPSActive = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-3">
             <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
-            <button onClick={toggleTheme}
-              className="text-sm px-3 py-1 rounded-lg transition btn-press"
+            <button onClick={toggleTheme} className="text-sm px-3 py-1 rounded-lg transition btn-press"
               style={{ backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isDark ? '#1e2d5a' : 'white' }}>
               {isDark ? '☀️' : '🌙'}
             </button>
-            <button onClick={toggleLanguage}
-              className="text-sm px-3 py-1 rounded-lg transition btn-press font-medium"
+            <button onClick={toggleLanguage} className="text-sm px-3 py-1 rounded-lg transition btn-press font-medium"
               style={{ backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isArabic ? '#1e2d5a' : 'white' }}>
               {isArabic ? 'EN' : 'ع'}
             </button>
@@ -230,13 +228,11 @@ const GPSActive = () => {
             style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '12px' }}>
             <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
             <div className="flex gap-2">
-              <button onClick={toggleTheme}
-                className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press"
+              <button onClick={toggleTheme} className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press"
                 style={{ backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isDark ? '#1e2d5a' : 'white' }}>
                 {isDark ? '☀️' : '🌙'}
               </button>
-              <button onClick={toggleLanguage}
-                className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press font-medium"
+              <button onClick={toggleLanguage} className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press font-medium"
                 style={{ backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isArabic ? '#1e2d5a' : 'white' }}>
                 {isArabic ? 'EN' : 'ع'}
               </button>
@@ -284,7 +280,27 @@ const GPSActive = () => {
           )}
         </div>
 
-        {/* Routes */}
+        {/* Basic Map — تظهر دائماً عند وجود إحداثيات بدون مسارات */}
+        {coords && routes.length === 0 && !loadingRoutes && (
+          <div className="rounded-xl shadow-sm overflow-hidden mb-4 border-t-4 fade-in"
+            style={{ backgroundColor: isDark ? '#1a1d27' : 'white', borderTopColor: '#1e2d5a', height: '300px' }}>
+            <MapContainer
+              center={[coords.latitude, coords.longitude]}
+              zoom={15}
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; OpenStreetMap contributors'
+              />
+              <Marker position={[coords.latitude, coords.longitude]}>
+                <Popup>🚌 You are here</Popup>
+              </Marker>
+            </MapContainer>
+          </div>
+        )}
+
+        {/* Routes Loading */}
         {loadingRoutes && (
           <div className="rounded-xl p-4 mb-4 text-center fade-in"
             style={{ backgroundColor: isDark ? '#1a1d27' : 'white' }}>
@@ -292,6 +308,7 @@ const GPSActive = () => {
           </div>
         )}
 
+        {/* Routes Map */}
         {routes.length > 0 && (
           <div className="rounded-xl shadow-sm p-4 mb-4 fade-in"
             style={{ backgroundColor: isDark ? '#1a1d27' : 'white' }}>
@@ -317,9 +334,12 @@ const GPSActive = () => {
             </div>
 
             <div className="rounded-xl overflow-hidden border-2"
-              style={{ borderColor: RouteColors[selectedRoute], height: '320px' }}>
-              <MapContainer center={[ISRA_UNIVERSITY.lat, ISRA_UNIVERSITY.lng]} zoom={12}
-                style={{ height: '100%', width: '100%' }}>
+              style={{ borderColor: RouteColors[selectedRoute], height: '300px' }}>
+              <MapContainer
+                center={[ISRA_UNIVERSITY.lat, ISRA_UNIVERSITY.lng]}
+                zoom={12}
+                style={{ height: '100%', width: '100%' }}
+              >
                 <TileLayer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; OpenStreetMap contributors'
@@ -374,6 +394,7 @@ const GPSActive = () => {
           style={{ backgroundColor: '#8B1A2B' }}>
           {ending ? t('endingTrip') : t('endTrip')}
         </button>
+
       </div>
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
