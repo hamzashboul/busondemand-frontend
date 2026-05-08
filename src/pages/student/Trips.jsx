@@ -15,6 +15,7 @@ const Trips = () => {
   const [filter, setFilter] = useState('all')
   const [animating, setAnimating] = useState(false)
   const [now, setNow] = useState(new Date())
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const { user, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
@@ -145,62 +146,127 @@ const Trips = () => {
     <div className="min-h-screen" style={{ backgroundColor: isDark ? '#0f1117' : '#f5f5f5' }}>
 
       {/* Navbar */}
-      <nav className="shadow px-6 py-3 flex justify-between items-center"
+      <nav className="shadow px-4 md:px-6 py-3 relative"
         style={{ backgroundColor: isDark ? '#0d1021' : '#1e2d5a' }}>
-        <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="IU" className="h-10 w-10 object-contain" />
-          <div>
-            <h1 className="text-white font-bold text-base leading-tight">{t('appName')}</h1>
-            <p className="text-blue-200 text-xs">{t('university')}</p>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="IU" className="h-10 w-10 object-contain" />
+            <div>
+              <h1 className="text-white font-bold text-base leading-tight">{t('appName')}</h1>
+              <p className="text-blue-200 text-xs">{t('university')}</p>
+            </div>
           </div>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex gap-4 items-center">
+            <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
+            <button
+              onClick={() => navigate('/my-bookings')}
+              className="text-sm text-white border px-3 py-1 rounded-lg hover:bg-white hover:text-blue-900 transition"
+              style={{ borderColor: 'rgba(255,255,255,0.4)' }}
+            >
+              {t('myBookings')}
+            </button>
+            <button
+              onClick={() => navigate('/schedule')}
+              className="text-sm text-white border px-3 py-1 rounded-lg hover:bg-white hover:text-blue-900 transition"
+              style={{ borderColor: 'rgba(255,255,255,0.4)' }}
+            >
+              📅 {t('schedule')}
+            </button>
+            <button
+              onClick={toggleTheme}
+              className="text-sm px-3 py-1 rounded-lg transition btn-press"
+              style={{
+                backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
+                color: isDark ? '#1e2d5a' : 'white'
+              }}
+            >
+              {isDark ? '☀️' : '🌙'}
+            </button>
+            <button
+              onClick={toggleLanguage}
+              className="text-sm px-3 py-1 rounded-lg transition btn-press font-medium"
+              style={{
+                backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
+                color: isArabic ? '#1e2d5a' : 'white'
+              }}
+            >
+              {isArabic ? 'EN' : 'ع'}
+            </button>
+            <button
+              onClick={handleLogout}
+              className="text-sm px-3 py-1 rounded-lg text-white hover:opacity-90 transition btn-press"
+              style={{ backgroundColor: '#8B1A2B' }}
+            >
+              {t('logout')}
+            </button>
+          </div>
+
+          {/* Hamburger Button */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden flex flex-col gap-1.5 p-2"
+          >
+            <span className="block w-6 h-0.5 bg-white transition-all" />
+            <span className="block w-6 h-0.5 bg-white transition-all" />
+            <span className="block w-6 h-0.5 bg-white transition-all" />
+          </button>
         </div>
-        <div className="flex gap-4 items-center">
-          <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
-          <button
-            onClick={() => navigate('/my-bookings')}
-            className="text-sm text-white border px-3 py-1 rounded-lg hover:bg-white hover:text-blue-900 transition"
-            style={{ borderColor: 'rgba(255,255,255,0.4)' }}
-          >
-            {t('myBookings')}
-          </button>
-          <button
-  onClick={() => navigate('/schedule')}
-  className="text-sm text-white border px-3 py-1 rounded-lg hover:bg-white hover:text-blue-900 transition"
-  style={{ borderColor: 'rgba(255,255,255,0.4)' }}
->
-  📅 {t('schedule')}
-</button>
-          <button
-            onClick={toggleTheme}
-            className="text-sm px-3 py-1 rounded-lg transition btn-press"
-            style={{
-              backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
-              color: isDark ? '#1e2d5a' : 'white'
-            }}
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button>
-          <button
-            onClick={toggleLanguage}
-            className="text-sm px-3 py-1 rounded-lg transition btn-press font-medium"
-            style={{
-              backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
-              color: isArabic ? '#1e2d5a' : 'white'
-            }}
-          >
-            {isArabic ? 'EN' : 'ع'}
-          </button>
-          <button
-            onClick={handleLogout}
-            className="text-sm px-3 py-1 rounded-lg text-white hover:opacity-90 transition btn-press"
-            style={{ backgroundColor: '#8B1A2B' }}
-          >
-            {t('logout')}
-          </button>
-        </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="md:hidden flex flex-col gap-2 pt-4 pb-2 fade-in"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '12px' }}>
+            <span className="text-blue-200 text-sm">Hi, {user?.name}</span>
+            <button
+              onClick={() => { navigate('/my-bookings'); setMenuOpen(false) }}
+              className="text-sm text-white border px-3 py-2 rounded-lg text-left hover:bg-white hover:text-blue-900 transition"
+              style={{ borderColor: 'rgba(255,255,255,0.4)' }}
+            >
+              {t('myBookings')}
+            </button>
+            <button
+              onClick={() => { navigate('/schedule'); setMenuOpen(false) }}
+              className="text-sm text-white border px-3 py-2 rounded-lg text-left hover:bg-white hover:text-blue-900 transition"
+              style={{ borderColor: 'rgba(255,255,255,0.4)' }}
+            >
+              📅 {t('schedule')}
+            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={toggleTheme}
+                className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press"
+                style={{
+                  backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
+                  color: isDark ? '#1e2d5a' : 'white'
+                }}
+              >
+                {isDark ? '☀️ Light' : '🌙 Dark'}
+              </button>
+              <button
+                onClick={toggleLanguage}
+                className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press font-medium"
+                style={{
+                  backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)',
+                  color: isArabic ? '#1e2d5a' : 'white'
+                }}
+              >
+                {isArabic ? 'EN' : 'ع'}
+              </button>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="text-sm px-3 py-2 rounded-lg text-white hover:opacity-90 transition btn-press text-left"
+              style={{ backgroundColor: '#8B1A2B' }}
+            >
+              {t('logout')}
+            </button>
+          </div>
+        )}
       </nav>
 
-      <div className="max-w-2xl mx-auto py-8 px-4">
+      <div className="max-w-2xl mx-auto py-6 px-4">
 
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold" style={{ color: isDark ? '#ffffff' : '#1e2d5a' }}>
@@ -240,7 +306,7 @@ const Trips = () => {
           filteredTrips.map((trip, index) => (
             <div
               key={trip.id}
-              className={`rounded-xl shadow-sm p-5 mb-4 border-l-4 card-hover ${
+              className={`rounded-xl shadow-sm p-4 mb-4 border-l-4 card-hover ${
                 animating ? 'opacity-0' : 'fade-in-delay-' + Math.min(index + 1, 5)
               }`}
               style={{
@@ -249,15 +315,14 @@ const Trips = () => {
                 transition: 'opacity 0.2s ease'
               }}
             >
-
               <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="font-semibold" style={{ color: isDark ? '#ffffff' : '#1a202c' }}>
+                <div className="flex-1 mr-2">
+                  <h3 className="font-semibold text-sm" style={{ color: isDark ? '#ffffff' : '#1a202c' }}>
                     {trip.direction === 'from_university'
                       ? `${t('israTo')} ${trip.area}`
                       : `${trip.area} ${t('toIsra')}`}
                   </h3>
-                  <p className="text-sm mt-1" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>
+                  <p className="text-xs mt-1" style={{ color: isDark ? '#a0aec0' : '#6b7280' }}>
                     Bus {trip.bus_number} · {new Date(trip.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                   {getCountdown(trip.departure_time) && (
@@ -266,7 +331,7 @@ const Trips = () => {
                     </p>
                   )}
                 </div>
-                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                <span className={`text-xs font-medium px-2 py-1 rounded-full flex-shrink-0 ${
                   trip.status === 'confirmed' ? 'bg-green-100 text-green-700' :
                   trip.status === 'cancelled' ? 'bg-red-100 text-red-700' :
                   trip.status === 'completed' ? 'bg-blue-100 text-blue-700' :

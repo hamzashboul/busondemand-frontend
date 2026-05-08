@@ -88,7 +88,7 @@
   transform: scale(0.97);
 }
 
-/* ===== PULSE DOT (للـ Live indicator) ===== */
+/* ===== PULSE DOT ===== */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -156,4 +156,98 @@
   --text-primary: #1a202c;
   --text-secondary: #6b7280;
   --border-color: #e5e7eb;
+}
+
+/* ===== RESPONSIVE — MOBILE ===== */
+
+/* Navbar */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    z-index: 999;
+    gap: 8px;
+    background-color: #1e2d5a;
+  }
+
+  .nav-links.open.dark {
+    background-color: #0d1021;
+  }
+
+  .hamburger {
+    display: flex !important;
+  }
+
+  /* Cards */
+  .card-hover {
+    margin-bottom: 12px;
+  }
+
+  /* Grid — 3 columns to 1 */
+  .grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Buttons row */
+  .flex.gap-2 {
+    flex-wrap: wrap;
+  }
+
+  /* Max width */
+  .max-w-2xl,
+  .max-w-3xl,
+  .max-w-lg {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Table scroll */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Toast */
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    min-width: unset;
+    max-width: unset;
+  }
+}
+
+/* Hamburger button — hidden on desktop */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
 }
