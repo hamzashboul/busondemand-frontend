@@ -106,41 +106,16 @@ const GPSActive = () => {
     }
   }, [])
 
- const fetchRoutes = async (areaName, dir) => {
-  setLoadingRoutes(true)
-  try {
-    const response = await api.get(`/routes?area=${encodeURIComponent(areaName)}&direction=${dir}`)
-    const data = response.data
+  const fetchRoutes = async (areaName, dir) => {
+    setLoadingRoutes(true)
+    try {
+      const response = await api.get(`/routes?area=${encodeURIComponent(areaName)}&direction=${dir}`)
+      const data = response.data
 
-    setDestination(data.destination)
+      setDestination(data.destination)
 
-    if (data.routes.features && data.routes.features.length > 0) {
-      const parsedRoutes = data.routes.features.map((feature, index) => {
-        const coords = feature.geometry.coordinates.map(([lng, lat]) => [lat, lng])
-        const summary = feature.properties.summary
-        return {
-          coords,
-          distance: (summary.distance / 1000).toFixed(1),
-          duration: Math.round(summary.duration / 60),
-          label: RouteLabels[index] || `Route ${index + 1}`,
-          color: RouteColors[index] || '#666'
-        }
-      })
-      setRoutes(parsedRoutes)
-      setToast({ message: `🗺️ ${parsedRoutes.length} routes found!`, type: 'success' })
-    }
-  } catch (err) {
-    console.error('Route fetch error:', err)
-    setToast({ message: 'Failed to load routes', type: 'error' })
-  } finally {
-    setLoadingRoutes(false)
-  }
-}
-
-      const orsData = await orsRes.json()
-
-      if (orsData.features && orsData.features.length > 0) {
-        const parsedRoutes = orsData.features.map((feature, index) => {
+      if (data.routes.features && data.routes.features.length > 0) {
+        const parsedRoutes = data.routes.features.map((feature, index) => {
           const coords = feature.geometry.coordinates.map(([lng, lat]) => [lat, lng])
           const summary = feature.properties.summary
           return {
