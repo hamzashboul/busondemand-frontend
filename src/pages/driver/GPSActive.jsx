@@ -106,45 +106,36 @@ const GPSActive = () => {
     }
   }, [])
 
-  const fetchRoutes = async (areaName, dir) => {
-    setLoadingRoutes(true)
-    try {
-      const geoRes = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(areaName + '، الأردن')}&format=json&limit=1`,
-        { headers: { 'Accept-Language': 'ar' } }
-      )
-      const geoData = await geoRes.json()
+ const fetchRoutes = async (areaName, dir) => {
+  setLoadingRoutes(true)
+  try {
+    const response = await api.get(`/routes?area=${encodeURIComponent(areaName)}&direction=${dir}`)
+    const data = response.data
 
-      if (!geoData || geoData.length === 0) {
-        setToast({ message: 'Could not find destination location', type: 'error' })
-        return
-      }
+    setDestination(data.destination)
 
-      const destLat = parseFloat(geoData[0].lat)
-      const destLng = parseFloat(geoData[0].lon)
-      setDestination({ lat: destLat, lng: destLng })
-
-      const from = dir === 'from_university'
-        ? [ISRA_UNIVERSITY.lng, ISRA_UNIVERSITY.lat]
-        : [destLng, destLat]
-      const to = dir === 'from_university'
-        ? [destLng, destLat]
-        : [ISRA_UNIVERSITY.lng, ISRA_UNIVERSITY.lat]
-
-      const orsRes = await fetch(
-        'https://api.openrouteservice.org/v2/directions/driving-car/geojson',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': import.meta.env.VITE_ORS_API_KEY,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            coordinates: [from, to],
-            alternative_routes: { target_count: 3, weight_factor: 1.6 }
-          })
+    if (data.routes.features && data.routes.features.length > 0) {
+      const parsedRoutes = data.routes.features.map((feature, index) => {
+        const coords = feature.geometry.coordinates.map(([lng, lat]) => [lat, lng])
+        const summary = feature.properties.summary
+        return {
+          coords,
+          distance: (summary.distance / 1000).toFixed(1),
+          duration: Math.round(summary.duration / 60),
+          label: RouteLabels[index] || `Route ${index + 1}`,
+          color: RouteColors[index] || '#666'
         }
-      )
+      })
+      setRoutes(parsedRoutes)
+      setToast({ message: `🗺️ ${parsedRoutes.length} routes found!`, type: 'success' })
+    }
+  } catch (err) {
+    console.error('Route fetch error:', err)
+    setToast({ message: 'Failed to load routes', type: 'error' })
+  } finally {
+    setLoadingRoutes(false)
+  }
+}
 
       const orsData = await orsRes.json()
 
