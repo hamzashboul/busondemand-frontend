@@ -60,11 +60,12 @@ const AddTrip = () => {
     setLoading(true)
     setMessage('')
     try {
-      // تحويل الوقت من local إلى UTC قبل الإرسال للـ backend
+      // تحويل الوقت من local إلى UTC بصيغة MySQL datetime
       const localTime = new Date(form.departure_time)
-      const utcDepartureTime = localTime.toISOString()
+      const pad = (n) => String(n).padStart(2, '0')
+      const mysqlUTC = `${localTime.getUTCFullYear()}-${pad(localTime.getUTCMonth()+1)}-${pad(localTime.getUTCDate())} ${pad(localTime.getUTCHours())}:${pad(localTime.getUTCMinutes())}:00`
 
-      const payload = { ...form, departure_time: utcDepartureTime }
+      const payload = { ...form, departure_time: mysqlUTC }
 
       if (editId) {
         await api.put(`/trips/${editId}`, { ...payload, status: 'pending' })
