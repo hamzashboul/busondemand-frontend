@@ -60,11 +60,17 @@ const AddTrip = () => {
     setLoading(true)
     setMessage('')
     try {
+      // تحويل الوقت من local إلى UTC قبل الإرسال للـ backend
+      const localTime = new Date(form.departure_time)
+      const utcDepartureTime = localTime.toISOString()
+
+      const payload = { ...form, departure_time: utcDepartureTime }
+
       if (editId) {
-        await api.put(`/trips/${editId}`, { ...form, status: 'pending' })
+        await api.put(`/trips/${editId}`, { ...payload, status: 'pending' })
         setMessage(t('tripUpdated'))
       } else {
-        await api.post('/trips', form)
+        await api.post('/trips', payload)
         setMessage(t('tripAdded'))
         setForm({ bus_id: '', area: '', departure_time: '', direction: 'from_university' })
       }
@@ -87,41 +93,66 @@ const AddTrip = () => {
       {/* Navbar */}
       <nav className="shadow px-4 md:px-6 py-3 relative"
         style={{ backgroundColor: isDark ? '#0d1021' : '#1e2d5a' }}>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="IU" className="h-10 w-10 object-contain" />
-            <div>
-              <h1 className="text-white font-bold text-base leading-tight">{t('appName')}</h1>
-              <p className="text-blue-200 text-xs">{t('university')} — {t('admin')}</p>
+            {/* Hamburger */}
+            <button
+              className="md:hidden flex flex-col gap-1 p-1"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Menu"
+            >
+              <span className="block w-5 h-0.5 bg-white"></span>
+              <span className="block w-5 h-0.5 bg-white"></span>
+              <span className="block w-5 h-0.5 bg-white"></span>
+            </button>
+
+            {/* Desktop buttons */}
+            <div className="hidden md:flex items-center gap-2">
+              <button onClick={toggleTheme} className="text-sm px-3 py-1.5 rounded-lg transition btn-press font-medium"
+                style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white' }}>
+                {isDark ? '☀️' : '🌙'}
+              </button>
+              <button onClick={toggleLanguage} className="text-sm px-3 py-1.5 rounded-lg transition btn-press font-medium"
+                style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white' }}>
+                {isArabic ? 'EN' : 'ع'}
+              </button>
+              <button onClick={() => navigate('/dashboard')} className="text-sm px-3 py-1.5 rounded-lg transition btn-press font-medium"
+                style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white' }}>
+                {t('dashboard')}
+              </button>
+              <button onClick={() => { logout(); navigate('/login') }} className="text-sm px-3 py-1.5 rounded-lg text-white transition btn-press font-medium"
+                style={{ backgroundColor: '#8B1A2B' }}>
+                {t('logout')}
+              </button>
             </div>
           </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex gap-4 items-center">
-            <button onClick={() => navigate('/dashboard')} className="text-sm text-white border px-3 py-1 rounded-lg hover:bg-white hover:text-blue-900 transition" style={{ borderColor: 'rgba(255,255,255,0.4)' }}>{t('dashboard')}</button>
-            <button onClick={toggleTheme} className="text-sm px-3 py-1 rounded-lg transition btn-press" style={{ backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isDark ? '#1e2d5a' : 'white' }}>{isDark ? '☀️' : '🌙'}</button>
-            <button onClick={toggleLanguage} className="text-sm px-3 py-1 rounded-lg transition btn-press font-medium" style={{ backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isArabic ? '#1e2d5a' : 'white' }}>{isArabic ? 'EN' : 'ع'}</button>
-            <button onClick={() => { logout(); navigate('/login') }} className="text-sm px-3 py-1 rounded-lg text-white hover:opacity-90 transition btn-press" style={{ backgroundColor: '#8B1A2B' }}>{t('logout')}</button>
+          <div className="text-right">
+            <div className="font-bold text-white text-sm">باص أون ديماند</div>
+            <div className="text-xs opacity-75 text-white">جامعة الإسراء — المسؤول</div>
           </div>
-
-          {/* Hamburger */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="flex md:hidden flex-col gap-1.5 p-2">
-            <span className="block w-6 h-0.5 bg-white" />
-            <span className="block w-6 h-0.5 bg-white" />
-            <span className="block w-6 h-0.5 bg-white" />
-          </button>
         </div>
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="md:hidden flex flex-col gap-2 pt-4 pb-2 fade-in"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '12px' }}>
-            <button onClick={() => { navigate('/dashboard'); setMenuOpen(false) }} className="text-sm text-white border px-3 py-2 rounded-lg text-left" style={{ borderColor: 'rgba(255,255,255,0.4)' }}>{t('dashboard')}</button>
-            <div className="flex gap-2">
-              <button onClick={toggleTheme} className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press" style={{ backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isDark ? '#1e2d5a' : 'white' }}>{isDark ? '☀️ Light' : '🌙 Dark'}</button>
-              <button onClick={toggleLanguage} className="flex-1 text-sm px-3 py-2 rounded-lg transition btn-press font-medium" style={{ backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isArabic ? '#1e2d5a' : 'white' }}>{isArabic ? 'EN' : 'ع'}</button>
-            </div>
-            <button onClick={() => { logout(); navigate('/login') }} className="text-sm px-3 py-2 rounded-lg text-white text-left btn-press" style={{ backgroundColor: '#8B1A2B' }}>{t('logout')}</button>
+          <div className="md:hidden absolute top-full left-0 right-0 z-50 shadow-lg px-4 py-3 flex flex-col gap-2"
+            style={{ backgroundColor: isDark ? '#0d1021' : '#1e2d5a' }}>
+            <button onClick={toggleTheme} className="text-sm px-3 py-2 rounded-lg transition btn-press font-medium text-left"
+              style={{ backgroundColor: isDark ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isDark ? '#1e2d5a' : 'white' }}>
+              {isDark ? '☀️ Light' : '🌙 Dark'}
+            </button>
+            <button onClick={toggleLanguage} className="text-sm px-3 py-2 rounded-lg transition btn-press font-medium text-left"
+              style={{ backgroundColor: isArabic ? '#f5f5f5' : 'rgba(255,255,255,0.15)', color: isArabic ? '#1e2d5a' : 'white' }}>
+              {isArabic ? 'EN' : 'ع'}
+            </button>
+            <button onClick={() => navigate('/dashboard')} className="text-sm px-3 py-2 rounded-lg transition btn-press font-medium text-left"
+              style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white' }}>
+              {t('dashboard')}
+            </button>
+            <button onClick={() => { logout(); navigate('/login') }} className="text-sm px-3 py-2 rounded-lg text-white text-left btn-press"
+              style={{ backgroundColor: '#8B1A2B' }}>
+              {t('logout')}
+            </button>
           </div>
         )}
       </nav>
