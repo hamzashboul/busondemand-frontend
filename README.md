@@ -1,16 +1,38 @@
-# React + Vite
+# 🚌 BusOnDemand — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Smart university bus booking & real-time tracking system built for Isra University, Jordan.
 
-Currently, two official plugins are available:
+🔗 **Live Demo:** [busondemand.vercel.app](https://busondemand.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🗺️ Real-time bus tracking on interactive map
+- 🎫 Instant seat booking system
+- 📅 View live bus schedules
+- 📄 Download PDF ticket after booking
+- ⭐ Rate & review trips
+- 👤 Student & Admin roles
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+- **Frontend:** React 19 · JavaScript · Vite
+- **Real-time:** Socket.io
+- **Map:** Leaflet.js
+- **Styling:** CSS
+- **Deployment:** Vercel
+
+---
+
+## 🔗 Related
+
+- [Backend Repository](https://github.com/hamzashboul/busondemand-backend)
+
+---
+
+## 👨‍💻 Author
+
+**Hamza Al-Shboul** — [LinkedIn](https://www.linkedin.com/in/hamza-alshboul) · [GitHub](https://github.com/hamzashboul)
